@@ -14,6 +14,8 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -86,6 +88,21 @@ public class Task extends TitleEntity implements HasCode {
     public void checkAndSetStatusCode(String statusCode) {
         checkStatusChangePossible(this.statusCode, statusCode);
         this.statusCode = statusCode;
+    }
+
+    public void addTag(String tag) {
+        if (tag == null || tag.length() < 2 || tag.length() > 32) {
+            throw new IllegalArgumentException("Tag must be between 2 and 32 characters");
+        }
+        if (tags == null) {
+            tags = new HashSet<>();
+        }
+        tags.add(tag);
+
+
+    }
+    public Set<String> getTags() {
+        return tags == null ? Set.of() : Collections.unmodifiableSet(tags);
     }
 
     @Override
