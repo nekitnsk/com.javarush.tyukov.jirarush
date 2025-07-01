@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static com.javarush.jira.bugtracking.ObjectType.TASK;
 import static com.javarush.jira.bugtracking.task.TaskUtil.fillExtraFields;
@@ -151,4 +152,20 @@ public class TaskService {
         task.addTag(tag);
         taskRepository.save(task);
     }
+
+    @Transactional
+    public void removeTagFromTask(Long taskId, String tag) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        task.removeTag(tag);
+        taskRepository.save(task);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<String> getTaskTags(Long taskId) {
+        return taskRepository.findById(taskId)
+                .map(Task::getTags)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+    }
+
 }

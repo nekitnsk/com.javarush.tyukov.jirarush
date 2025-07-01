@@ -67,7 +67,7 @@ public class Task extends TitleEntity implements HasCode {
             joinColumns = @JoinColumn(name = "task_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"task_id", "tag"}, name = "uk_task_tag"))
     @Column(name = "tag")
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn()
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<@Size(min = 2, max = 32) String> tags = Set.of();
@@ -90,6 +90,8 @@ public class Task extends TitleEntity implements HasCode {
         this.statusCode = statusCode;
     }
 
+
+
     public void addTag(String tag) {
         if (tag == null || tag.length() < 2 || tag.length() > 32) {
             throw new IllegalArgumentException("Tag must be between 2 and 32 characters");
@@ -98,9 +100,18 @@ public class Task extends TitleEntity implements HasCode {
             tags = new HashSet<>();
         }
         tags.add(tag);
-
-
     }
+
+    public void removeTag(String tag) {
+        if (tags != null) {
+            tags.remove(tag);
+        }
+    }
+
+    public boolean hasTag(String tag) {
+        return tags != null && tags.contains(tag);
+    }
+
     public Set<String> getTags() {
         return tags == null ? Set.of() : Collections.unmodifiableSet(tags);
     }
