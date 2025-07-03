@@ -1,4 +1,4 @@
-FROM openjdk: openjdk-22
+FROM openjdk:22-jdk
 ARG JAR_FILE=target/*.jar
 
 COPY config/_application-prod.yaml /config/_application-prod.yaml

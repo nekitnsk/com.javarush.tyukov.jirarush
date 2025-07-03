@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: jira
+      POSTGRES_USER: jira
+      POSTGRES_PASSWORD: JiraRush
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - jira-network
+
+
+  jirarush:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      JIRA_DB_URL: jdbc:postgresql://host.docker.internal
+      JIRA_DB_PORT: 5432
+      JIRA_POSTGRESS_USERNAME: jira
+      JIRA_POSTGRESS_PASSWORD: JiraRush
+      JIRA_GITHUB_CLIENT_ID: 3d0d8738e65881fff266
+      JIRA_GITHUB_SECRET: 0f97031ce6178b7dfb67a6af587f37e222a16120
+      JIRA_GITHUB_SCOPE: email
+      JIRA_GOOGLE_CLIENT_ID: 329113642700-f8if6pu68j2repq3ef6umd5jgiliup60.apps.googleusercontent.com
+      JIRA_GOOGLE_SECRET: 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
+      JIRA_GOOGLE_SCOPE: email, profile
+      JIRA_GITLAB_CLIENT_ID: b8520a3266089063c0d8261cce36971defa513f5ffd9f9b7a3d16728fc83a494
+      JIRA_GITLAB_SECRET: e72c65320cf9d6495984a37b0f9cc03ec46be0bb6f071feaebbfe75168117004
+      JIRA_GITLAB_SCOPE: read_user
+      JIRA_MAIL_HOST: smtp.gmail.com
+      JIRA_MAIL_USERNAME: jira4jr@gmail.com
+      JIRA_MAIL_PASSWORD: zdfzsrqvgimldzyj
+      JIRA_MAIL_PORT: 587
+    networks:
+      - jira-network
+
+volumes:
+  db_data:
+networks:
+  jira-network:
+    driver: bridge
